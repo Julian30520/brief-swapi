@@ -1,0 +1,23 @@
+{
+  "name": "brief-swapi",
+  "version": "1.0.0",
+  "description": "brief avec swapi",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Julian30520/brief-swapi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Julian30520/brief-swapi/issues"
+  },
+  "homepage": "https://github.com/Julian30520/brief-swapi#readme",
+  "dependencies": {
+    "parcel-bundler": "^1.12.5"
+  }
+}
