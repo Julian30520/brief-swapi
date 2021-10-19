@@ -1,6 +1,87 @@
+const API_URL = "https://swapi.dev/api/vehicles/?page=";
+const CONTAINER = document.getElementById('container');
+const BUTTON_NEXT = document.getElementById('button-next');
+const BUTTON_BACK = document.getElementById('button-back');
+
+let pageIndex = 1;
+
+BUTTON_NEXT.addEventListener('click', () => {
+    pageIndex++;
+    resetThumbnail();
+    createThumbnail();
+});
+
+BUTTON_BACK.addEventListener('click', () => {
+    pageIndex--;
+    resetThumbnail();
+    createThumbnail();
+});
+
+async function getData(id) {
+    try {
+        const response = await fetch(API_URL + pageIndex);
+        const responseFormat = await response.json();
+        console.log(responseFormat);
+
+        const NAME = document.getElementById("name"+id);
+        const MODEL = document.getElementById("model"+id);
+        const MANUFACTERER = document.getElementById("manufacturer"+id);
+        const COST = document.getElementById("cost_in_credits"+id);
+        const LENGTH = document.getElementById("length"+id);
+        const SPEED = document.getElementById("max_atmosphering_speed"+id);
+        const PASSENGERS = document.getElementById("passengers"+id);
+        const HOMEWORLD = document.getElementById('homeworld'+id);
+    
+
+        NAME.innerText = responseFormat.results[id].name;
+        MODEL.innerText = responseFormat.results[id].model;
+        MANUFACTERER.innerText = responseFormat.results[id].manufacturer;
+        COST.innerText = responseFormat.results[id].cost_in_credits + " credits";
+        LENGTH.innerText = responseFormat.results[id].length + " mètres";
+        SPEED.innerText = responseFormat.results[id].max_atmosphering_speed + " KM/H";
+        PASSENGERS.innerText = responseFormat.results[id].passengers;
+
+        const responsePlanet = await fetch(responseFormat.results[id].homeworld);    
+        const responseFormatPlanet = await responsePlanet.json();
+        HOMEWORLD.innerText =  responseFormatPlanet.name;
+    }
+    catch(err) {
+        console.error(err);
+    }
+}
+
+function createThumbnail() {
+    for(let index = 0; index < 10; index++) {
+        CONTAINER.innerHTML += 
+    `
+    <div class="thumbnail">
+        <H3 id="name${index}">name : </H3>
+        <p id="model${index}">model : </p>
+        <p id="manufacturer${index}">manufacturer : </p>
+        <p id="cost_in_credits${index}">Coûts : </p>
+        <p id="length${index}">length : </p>
+    
+        <p id="homeworld${index}">monde : </p>
+    </div>
+    `;
+
+    getData(index);
+    }
+}
+
+function resetThumbnail() {
+    CONTAINER.innerHTML = "";
+}
+
+createThumbnail();
 
 
-// const NAME_VEHICLE = document.getElementById("name_vehicle");
+
+
+
+
+
+/*// const NAME_VEHICLE = document.getElementById("name_vehicle");
 // const MODEL_VEHICLE = document.getElementById("model_vehicle");
 // const MANUFACTERER_VEHICLE = document.getElementById("manufacturer_vehicle");
 // const COST_VEHICLE = document.getElementById("cost_vehicle");
@@ -17,6 +98,8 @@ const CONTAINER = document.getElementById("container");
 const API_URL = "https://swapi.dev/api/vehicles/";
 const BUTTON_SUIVANT = document.getElementById("next_button")
 const BUTTON_INFORMATIONS = document.getElementById("extend_button");
+const BUTTON_NEXT = document.getElementById('button-next');
+const BUTTON_BACK = document.getElementById('button-back');
 
 fetch(API_URL).then(resp => {
     return resp.json()
@@ -40,10 +123,29 @@ fetch(API_URL).then(resp => {
           <p id ="crew"${index}> Equipage : ${VEHICULES.vehicle_class}</p>
       </div>
     `
-    }    
-
-
+    }   
+    
+    
   })
+
+  function resetThumbnail() {
+    CONTAINER.innerHTML = "";
+}
+
+let pageIndex = 1;
+
+BUTTON_NEXT.addEventListener('click', () => {
+    pageIndex++;
+    resetThumbnail();
+    createThumbnail();
+});
+
+BUTTON_BACK.addEventListener('click', () => {
+    pageIndex--;
+    resetThumbnail();
+    createThumbnail();
+});
+
 
  
 
@@ -121,4 +223,4 @@ fetch(API_URL).then(resp => {
       // CONSUMABLE_VEHICLE.innerText = dataVehicules.results[index].consumables;
       // CLASS_VEHICLE.innerText = dataVehicules.results[index].vehicle_class;
         
-      //   // }
+      //   // }*/
