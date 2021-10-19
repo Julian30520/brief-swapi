@@ -76,3 +76,20 @@ body {
     height: 300px;
     background-color: lightgray;
 }
+
+footer {
+    text-align: center;
+}
+
+.button_page{
+
+    background: rgba(196, 196, 196, 0.01);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 20px;
+    color: white;
+    font-family: 'Bai Jamjuree', sans-serif;
+    width: 120px;
+    height: 30px;
+    margin: 15px 25px 15px 25px;
+    align-items: center;
+}

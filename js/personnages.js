@@ -55,7 +55,6 @@ function createThumbnail() {
         <p id="mass${index}">mass : </p>
         <p id="date${index}">naissance : </p>
         <p id="gender${index}">sexe : </p>
-        
         <p id="homeworld${index}">monde : </p>
     </div>
     `;
