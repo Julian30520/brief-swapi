@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Les planetes</title>
+    <script src="/js/planete.js" defer></script>
     <link rel="stylesheet" href="css/pages-style.css">
     <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree&display=swap" rel="stylesheet">
 </head>
@@ -17,18 +18,16 @@
         <div class="rectangle"></div>
     </div>
     <div class="search">
-        <input type="text" placeholder="Rechercher">
+        <input type="text" placeholder="Rechercher" id="planete">
+        <button id="buttonData">Get data</button>
     </div>
-    <div class="container">
-        <div class="thumbnail">
-            <p>infos</p>
-        </div>
-        <div class="thumbnail">
-            <p>infos</p>
-        </div>
-        <div class="thumbnail">
-            <p>infos</p>
-        </div>
+    <div class="container" id="container">
+        
     </div>
+
+    <footer>
+        <button class="button_page" id="button_precedent">Page précédante</button>
+        <button class="button_page" id="button_suivant">Page suivante</button>
+    </footer>
 </body>
 </html>
