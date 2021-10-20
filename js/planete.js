@@ -102,7 +102,7 @@ async function getData(id, resident, movies) {
 
 
 function createThumbnail() {
-  for (let index = 0; index < 8; index++) {
+  for (let index = 0; index < 10; index++) {
     CONTAINER.innerHTML += `
             <div class="thumbnail">
             <P id="nom${index}">Name : </P>
