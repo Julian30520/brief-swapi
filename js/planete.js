@@ -1,74 +1,133 @@
-// const NAME = document.getElementById('nom');
-// const DIAMETER = document.getElementById('diametre');
-// const CLIMATE = document.getElementById('climat');
-// const GRAVITY = document.getElementById('gravity');
-// const TERRAIN = document.getElementById('terrain');
-// const POPULATION = document.getElementById('pop')
+const API_URL = "https://swapi.dev/api/planets/?page=";
+const CONTAINER = document.getElementById("container");
+const BUTTON_NEXT = document.getElementById("button-next");
+const BUTTON_BACK = document.getElementById("button-back");
+
+let listeButtonResident = [];
+
+let listeButtonFilm = [];
+
+let pageIndex = 1;
 
 
-const CONTAINER = document.getElementById('container');
-const API_URL = "https://swapi.dev/api/planets/";
+function setButton(){
 
-// const BUTTON_DATA = document.getElementById('buttonData');
-// const INPUT_PLANETE = document.getElementById('planete');
+    for (let index = 0; index < 10; index++) {
+        const buttonResident = new Object();
+        buttonResident.ref=document.getElementById(`residents${index}`);
 
-const API_URL_PAGE = "https://swapi.dev/api/planets/?page=2";
-const BUTTONS = document.getElementById("button_suivant");
+        const buttonMovie = new Object();
+        buttonMovie.ref=document.getElementById(`movies${index}`);
 
-// BUTTON_DATA.addEventListener('click', ()=> {
-//     console.log(INPUT_PLANETE.value);
-//     const NEW_API_URL = `${API_URL}/${INPUT_PLANETE.value}`;
-//     getData(NEW_API_URL);
-// })
-
-BUTTONS.addEventListener('click',() => {
-    console.log(BUTTONS.value);
-    const NUMERO_PAGE = BUTTONS.value;
-    getData(API_URL_PAGE+NUMERO_PAGE);
-  });
-
-const listUser =["coco", "micka", "jose"]
-
-
-const result = listUser.filter( user => user.includes("o"));
-
-console.log(result);
-
-
-
-
-const getData = (api) => {
-    fetch(api).then(resp => {
-        return resp.json()
-    }).then(dataPlanete => {
-        console.log(dataPlanete);
-    
-        // NAME.innerText = dataPlanete.results[1].name;
-        // DIAMETER.innerText = dataPlanete.results[1].diameter;
-        // CLIMATE.innerText = dataPlanete.results[1].climate;
-        // GRAVITY.innerText = dataPlanete.results[1].gravity;
-        // TERRAIN.innerText = dataPlanete.results[1].terrain;
-        // POPULATION.innerText = dataPlanete.results[1].population;
-
-
-
-        for (let index = 0; index < dataPlanete.results.length; index++) {
-
-            let PLANETE = dataPlanete.results[index];
-            console.log(PLANETE);
+        listeButtonResident.push(buttonResident);
+        listeButtonFilm.push(buttonMovie);
         
-            CONTAINER.innerHTML += `
-            <div class="thumbnail">
-                <P id="nom ${index}">Name : ${PLANETE.name}</P>
-                <P id="diametre${index}">Diametre : ${PLANETE.diameter}</P>
-                <P id="climat${index}">Climat : ${PLANETE.climat}</P>
-                <P id="gravity${index}">Gravity : ${PLANETE.gravity}</P>
-                <P id="terrain${index}">Terrain : ${PLANETE.terrain}</P>
-                <P id="pop${index}">Population : ${PLANETE.population}</P>
-              </div>`
-    
-          }
-        })
     }
-getData(API_URL);
-    
+
+    for (let index = 0; index < 10; index++) {
+        listeButtonResident[index].ref.addEventListener('click', () => {
+            getData(index,true,false);
+          });
+
+          listeButtonFilm[index].ref.addEventListener('click', () => {
+            getData(index,false,true);
+          });
+
+        
+        
+        
+    }
+}
+
+
+
+BUTTON_NEXT.addEventListener("click", () => {
+  pageIndex++;
+  resetThumbnail();
+  createThumbnail();
+});
+
+BUTTON_BACK.addEventListener("click", () => {
+  pageIndex--;
+  resetThumbnail();
+  createThumbnail();
+});
+
+async function getData(id, resident, movies) {
+  try {
+    const response = await fetch(API_URL + pageIndex);
+    const responseFormat = await response.json();
+    // console.log(responseFormat);
+
+    const NAME = document.getElementById("nom" + id);
+    const DIAMETER = document.getElementById("diametre" + id);
+    const CLIMATE = document.getElementById("climat" + id);
+    const GRAVITY = document.getElementById("gravity" + id);
+    const TERRAIN = document.getElementById("terrain" + id);
+    const POPULATION = document.getElementById("pop" + id);
+    const RESIDENT = document.getElementById("residents" + id);
+    const MOVIES = document.getElementById("movies"+ id)
+
+    NAME.innerText = responseFormat.results[id].name;
+    DIAMETER.innerText = responseFormat.results[id].diameter;
+    CLIMATE.innerText = responseFormat.results[id].climate;
+    GRAVITY.innerText = responseFormat.results[id].gravity;
+    TERRAIN.innerText = responseFormat.results[id].terrain;
+    POPULATION.innerText = responseFormat.results[id].population;
+
+    if(resident) {
+        const listResidentURL = responseFormat.results[id].residents;
+        const responseResident = await Promise.all(listResidentURL.map(x => fetch(x)));
+        const responseFormatResident = await Promise.all(responseResident.map(x => x.json()));
+        console.log(responseFormatResident);
+        for(let index = 0; index < responseFormatResident.length; index++) {
+            RESIDENT.innerText += responseFormatResident[index].name + "\n";
+        }
+    }
+
+        if(movies) {
+            const listMoviesURL = responseFormat.results[id].films;
+            const responseMovie = await Promise.all(listMoviesURL.map(x => fetch(x)));
+            const responseFormatMovie = await Promise.all(responseMovie.map(x => x.json()));
+            console.log(responseFormatMovie);
+            for(let index = 0; index < responseFormatMovie.length; index++) {
+                MOVIES.innerText += responseFormatMovie[index].title + "\n";
+            }
+    }
+} catch (err) {
+    console.error(err);
+  }
+}
+
+
+
+function createThumbnail() {
+  for (let index = 0; index < 8; index++) {
+    CONTAINER.innerHTML += `
+            <div class="thumbnail">
+            <P id="nom${index}">Name : </P>
+            <P id="diametre${index}">Diametre : </P>
+            <P id="climat${index}">Climat : </P>
+            <P id="gravity${index}">Gravity : </P>
+            <P id="terrain${index}">Terrain : </P>
+            <P id="pop${index}">Population : </P>
+            <button id="residents${index}" value="">residents : <br></button>
+            <button id="movies${index}"> Movies : <br> </button>
+    </div>
+        `;
+
+    getData(index,false,false);
+  }
+
+  setButton();
+}
+
+
+function resetThumbnail() {
+  CONTAINER.innerHTML = "";
+    listeButtonResident = [];
+    listeButtonFilm = [];
+  
+}
+
+createThumbnail();
