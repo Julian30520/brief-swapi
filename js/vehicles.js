@@ -3,7 +3,28 @@ const CONTAINER = document.getElementById('container');
 const BUTTON_NEXT = document.getElementById('button-next');
 const BUTTON_BACK = document.getElementById('button-back');
 
+
+let listeButtonFilm = [];
+
+
 let pageIndex = 1;
+
+function setButton(){
+
+  for (let index = 0; index < 10 ; index++) {
+    const buttonMovies = new Object();
+    buttonMovies.ref=document.getElementById(`button-movies${index}`);
+    
+    listeButtonFilm.push(buttonMovies);
+  }
+
+  for (let index = 0; index < 10; index++) {
+    listeButtonFilm[index].ref.addEventListener('click', () => {
+      getData(index, true);
+    });
+    
+  }
+}
 
 BUTTON_NEXT.addEventListener('click', () => {
     pageIndex++;
@@ -17,60 +38,68 @@ BUTTON_BACK.addEventListener('click', () => {
     createThumbnail();
 });
 
-async function getData(id) {
+async function getData(id, movies) {
     try {
         const response = await fetch(API_URL + pageIndex);
         const responseFormat = await response.json();
-        console.log(responseFormat);
+       // console.log(responseFormat);
 
         const NAME = document.getElementById("name"+id);
         const MODEL = document.getElementById("model"+id);
         const MANUFACTERER = document.getElementById("manufacturer"+id);
-        const COST = document.getElementById("cost_in_credits"+id);
+        const COST = document.getElementById("cost"+id);
         const LENGTH = document.getElementById("length"+id);
-        const SPEED = document.getElementById("max_atmosphering_speed"+id);
-        const PASSENGERS = document.getElementById("passengers"+id);
-        const HOMEWORLD = document.getElementById('homeworld'+id);
+        const MOVIES = document.getElementById('movies'+id);
     
 
         NAME.innerText = responseFormat.results[id].name;
         MODEL.innerText = responseFormat.results[id].model;
         MANUFACTERER.innerText = responseFormat.results[id].manufacturer;
-        COST.innerText = responseFormat.results[id].cost_in_credits + " credits";
-        LENGTH.innerText = responseFormat.results[id].length + " mètres";
-        SPEED.innerText = responseFormat.results[id].max_atmosphering_speed + " KM/H";
-        PASSENGERS.innerText = responseFormat.results[id].passengers;
+        COST.innerText = responseFormat.results[id].cost_in_credits;
+        LENGTH.innerText = responseFormat.results[id].length;
+      
 
-        const responsePlanet = await fetch(responseFormat.results[id].homeworld);    
-        const responseFormatPlanet = await responsePlanet.json();
-        HOMEWORLD.innerText =  responseFormatPlanet.name;
+              
+        if(movies) {
+          const listMoviesURL = responseFormat.results[id].films;
+          const responseMovie = await Promise.all(listMoviesURL.map(x => fetch(x)));
+          const responseFormatMovie = await Promise.all(responseMovie.map(x => x.json()));
+          console.log(responseFormatMovie);
+          for(let index = 0; index < responseFormatMovie.length; index++) {
+              MOVIES.innerText += responseFormatMovie[index].title + "\n";
+          }
+      }
     }
     catch(err) {
         console.error(err);
     }
 }
 
+
 function createThumbnail() {
     for(let index = 0; index < 10; index++) {
         CONTAINER.innerHTML += 
-    `
-    <div class="thumbnail">
-        <H3 id="name${index}">name : </H3>
-        <p id="model${index}">model : </p>
-        <p id="manufacturer${index}">manufacturer : </p>
-        <p id="cost_in_credits${index}">Coûts : </p>
-        <p id="length${index}">length : </p>
-    
-        <p id="homeworld${index}">monde : </p>
-    </div>
-    `;
+          `
+          <div class="thumbnail">
+            <H3 id="name${index}">name : </H3>
+            <p id="model${index}">model : </p>
+            <p id="manufacturer${index}">manufacturer : </p>
+            <p id="cost${index}">cost : </p>
+            <p id="length${index}">length : </p>
+            <button id="button-movies${index}">FILMS</button>
+            <p id="movies${index}"></p>
+          </div>
+          `;
 
-    getData(index);
+    getData(index, false);
     }
+
+    setButton();
 }
 
 function resetThumbnail() {
     CONTAINER.innerHTML = "";
+    listeButtonFilm = [];
 }
 
 createThumbnail();
