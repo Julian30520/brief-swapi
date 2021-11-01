@@ -9,37 +9,28 @@ let listeButtonFilm = [];
 
 let pageIndex = 1;
 
+function setButton() {
+  for (let index = 0; index < 10; index++) {
+    const buttonResident = new Object();
+    buttonResident.ref = document.getElementById(`button_residents${index}`);
 
-function setButton(){
+    const buttonMovie = new Object();
+    buttonMovie.ref = document.getElementById(`button_movies${index}`);
 
-    for (let index = 0; index < 10; index++) {
-        const buttonResident = new Object();
-        buttonResident.ref=document.getElementById(`residents${index}`);
+    listeButtonResident.push(buttonResident);
+    listeButtonFilm.push(buttonMovie);
+  }
 
-        const buttonMovie = new Object();
-        buttonMovie.ref=document.getElementById(`movies${index}`);
+  for (let index = 0; index < 10; index++) {
+    listeButtonResident[index].ref.addEventListener("click", () => {
+      getData(index, true, false);
+    });
 
-        listeButtonResident.push(buttonResident);
-        listeButtonFilm.push(buttonMovie);
-        
-    }
-
-    for (let index = 0; index < 10; index++) {
-        listeButtonResident[index].ref.addEventListener('click', () => {
-            getData(index,true,false);
-          });
-
-          listeButtonFilm[index].ref.addEventListener('click', () => {
-            getData(index,false,true);
-          });
-
-        
-        
-        
-    }
+    listeButtonFilm[index].ref.addEventListener("click", () => {
+      getData(index, false, true);
+    });
+  }
 }
-
-
 
 BUTTON_NEXT.addEventListener("click", () => {
   pageIndex++;
@@ -66,7 +57,7 @@ async function getData(id, resident, movies) {
     const TERRAIN = document.getElementById("terrain" + id);
     const POPULATION = document.getElementById("pop" + id);
     const RESIDENT = document.getElementById("residents" + id);
-    const MOVIES = document.getElementById("movies"+ id)
+    const MOVIES = document.getElementById("movies" + id);
 
     NAME.innerText = responseFormat.results[id].name;
     DIAMETER.innerText = responseFormat.results[id].diameter;
@@ -75,31 +66,37 @@ async function getData(id, resident, movies) {
     TERRAIN.innerText = responseFormat.results[id].terrain;
     POPULATION.innerText = responseFormat.results[id].population;
 
-    if(resident) {
-        const listResidentURL = responseFormat.results[id].residents;
-        const responseResident = await Promise.all(listResidentURL.map(x => fetch(x)));
-        const responseFormatResident = await Promise.all(responseResident.map(x => x.json()));
-        console.log(responseFormatResident);
-        for(let index = 0; index < responseFormatResident.length; index++) {
-            RESIDENT.innerText += responseFormatResident[index].name + "\n";
-        }
+    if (resident) {
+      const listResidentURL = responseFormat.results[id].residents;
+      const responseResident = await Promise.all(
+        listResidentURL.map((x) => fetch(x))
+      );
+      const responseFormatResident = await Promise.all(
+        responseResident.map((x) => x.json())
+      );
+      console.log(responseFormatResident);
+      for (let index = 0; index < responseFormatResident.length; index++) {
+        RESIDENT.innerText += responseFormatResident[index].name + "\n";
+      }
     }
 
-        if(movies) {
-            const listMoviesURL = responseFormat.results[id].films;
-            const responseMovie = await Promise.all(listMoviesURL.map(x => fetch(x)));
-            const responseFormatMovie = await Promise.all(responseMovie.map(x => x.json()));
-            console.log(responseFormatMovie);
-            for(let index = 0; index < responseFormatMovie.length; index++) {
-                MOVIES.innerText += responseFormatMovie[index].title + "\n";
-            }
+    if (movies) {
+      const listMoviesURL = responseFormat.results[id].films;
+      const responseMovie = await Promise.all(
+        listMoviesURL.map((x) => fetch(x))
+      );
+      const responseFormatMovie = await Promise.all(
+        responseMovie.map((x) => x.json())
+      );
+      console.log(responseFormatMovie);
+      for (let index = 0; index < responseFormatMovie.length; index++) {
+        MOVIES.innerText += responseFormatMovie[index].title + "\n";
+      }
     }
-} catch (err) {
+  } catch (err) {
     console.error(err);
   }
 }
-
-
 
 function createThumbnail() {
   for (let index = 0; index < 10; index++) {
@@ -111,23 +108,23 @@ function createThumbnail() {
             <P id="gravity${index}">Gravity : </P>
             <P id="terrain${index}">Terrain : </P>
             <P id="pop${index}">Population : </P>
-            <button id="residents${index}" value="">residents : <br></button>
-            <button id="movies${index}"> Movies : <br> </button>
+            <button id="button_residents${index}" value="">residents : <br></button>
+            <p id="residents${index}"></p>
+            <button id="button_movies${index}"> Movies : <br> </button>
+            <p id="movies${index}"></p>
     </div>
         `;
 
-    getData(index,false,false);
+    getData(index, false, false);
   }
 
   setButton();
 }
 
-
 function resetThumbnail() {
   CONTAINER.innerHTML = "";
-    listeButtonResident = [];
-    listeButtonFilm = [];
-  
+  listeButtonResident = [];
+  listeButtonFilm = [];
 }
 
 createThumbnail();
